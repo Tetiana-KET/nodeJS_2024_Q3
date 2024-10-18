@@ -1,0 +1,30 @@
+{
+	"compilerOptions": {
+		"target": "ES2022",
+		"lib": ["ESNext"],
+		"module": "esnext",
+		"baseUrl": "./src",
+		"rootDir": "./src",
+
+		/* Bundler mode */
+		"moduleResolution": "Node",
+		"allowImportingTsExtensions": true,
+		"isolatedModules": true,
+		"moduleDetection": "force",
+		"noEmit": true,
+
+		/* Linting */
+		"strict": true,
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
+		"noFallthroughCasesInSwitch": true,
+		"skipLibCheck": true,
+
+		/* Emit */
+		"sourceMap": true,
+		"outDir": "./dist",
+		"removeComments": true
+	},
+	"include": ["./src/**/*.ts"],
+	"exclude": ["./node_modules"]
+}
