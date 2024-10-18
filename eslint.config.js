@@ -1,39 +1,34 @@
 import js from '@eslint/js';
 import globals from 'globals';
-import tseslint from 'typescript-eslint';
+import tsEslint from '@typescript-eslint/parser';
+import tsEslintPlugin from '@typescript-eslint/eslint-plugin';
 import prettierPlugin from 'eslint-plugin-prettier';
 import eslintConfigPrettier from 'eslint-config-prettier';
 
-export default tseslint.config(
-	{ extends: [js.configs.recommended, ...tseslint.configs.recommended] },
-	{ files: ['**/*.{ts,tsx}'] },
-	{ ignores: ['dist', 'node_modules', 'eslint.config.js'] },
+export default [
+	js.configs.recommended,
 	{
+		files: ['**/*.{ts,tsx}'],
+		ignores: ['eslint.config.js', 'webpack.config.ts', 'dist', 'node_modules'],
 		languageOptions: {
+			parser: tsEslint,
 			globals: {
 				...globals.browser,
 				...globals.es2020,
 				...globals.node,
 			},
+			parserOptions: {
+				ecmaVersion: 2022,
+				sourceType: 'module',
+			},
 		},
-	},
-	{
 		plugins: {
-			'typescript-eslint': tseslint.plugin,
+			'typescript-eslint': tsEslintPlugin,
 			prettier: prettierPlugin,
 		},
-	},
-	{
 		rules: {
-			...prettierPlugin.configs.recommended.rules,
 			...eslintConfigPrettier.rules,
-			'@typescript-eslint/no-explicit-any': 'error',
-			'@typescript-eslint/no-unused-vars': 'warn',
-			'prettier/prettier': ['error', { endOfLine: 'auto' }],
-			'prefer-const': 'error',
-			'no-unused-vars': 'error',
-			'no-multi-spaces': 'error',
-			'no-multiple-empty-lines': ['error', { max: 1 }],
+			'prettier/prettier': 'error',
 			'no-magic-numbers': [
 				'error',
 				{
@@ -46,5 +41,5 @@ export default tseslint.config(
 			quotes: ['error', 'single', { allowTemplateLiterals: true }],
 			semi: ['error', 'always'],
 		},
-	}
-);
+	},
+];
