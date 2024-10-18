@@ -1,6 +1,7 @@
 import { IncomingMessage } from 'node:http';
 import { v4 as generateID } from 'uuid';
 import { validateUserData } from '../utils/validateUserData';
+import { ErrorMessages } from '../models/ErrorMessages';
 
 export function addUser(req: IncomingMessage): Promise<any> {
 	return new Promise((resolve, reject) => {
@@ -23,7 +24,7 @@ export function addUser(req: IncomingMessage): Promise<any> {
 				};
 				resolve(newUser);
 			} else {
-				reject(new Error('Invalid user data'));
+				reject(new Error(ErrorMessages.InvalidData));
 			}
 		});
 
