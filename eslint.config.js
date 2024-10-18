@@ -26,6 +26,10 @@ export default [
 			'typescript-eslint': tsEslintPlugin,
 			prettier: prettierPlugin,
 		},
+		env: {
+			node: true,
+			jest: true,
+		},
 		rules: {
 			...eslintConfigPrettier.rules,
 			'prettier/prettier': 'error',
