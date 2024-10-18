@@ -5,6 +5,8 @@ import { Routes } from './models/Routes';
 import { getUserById } from './services/getUserById';
 import { getStatusCode } from './utils/getStatusCode';
 import { HttpStatus } from './models/HttpStatus';
+import { deleteUser } from './services/deleteUser';
+import { ErrorMessages } from './models/ErrorMessages';
 
 const users: User[] = [];
 
@@ -36,6 +38,16 @@ const server = createServer((req, res) => {
 				});
 				res.end(JSON.stringify({ error: err.message }));
 			});
+	} else if (
+		req.method === 'DELETE' &&
+		req.url?.startsWith(Routes.USER_BY_ID)
+	) {
+		deleteUser(req, res, users).catch(() => {
+			res.writeHead(HttpStatus.NotFound, {
+				'Content-Type': 'application/json',
+			});
+			res.end(JSON.stringify({ error: ErrorMessages.UserNotFound }));
+		});
 	} else {
 		res.writeHead(HttpStatus.NotFound, { 'Content-Type': 'application/json' });
 		res.end(JSON.stringify({ error: 'Not Found' }));
