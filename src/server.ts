@@ -7,6 +7,7 @@ import { getStatusCode } from './utils/getStatusCode';
 import { HttpStatus } from './models/HttpStatus';
 import { deleteUser } from './services/deleteUser';
 import { ErrorMessages } from './models/ErrorMessages';
+import { updateUserById } from './services/updateUserById';
 
 const users: User[] = [];
 
@@ -30,27 +31,17 @@ const server = createServer((req, res) => {
 		res.writeHead(HttpStatus.OK, { 'Content-Type': 'application/json' });
 		res.end(JSON.stringify(users));
 	} else if (req.method === 'GET' && req.url?.startsWith(Routes.USER_BY_ID)) {
-		getUserById(req, res, users)
-			.then(() => {})
-			.catch(err => {
-				res.writeHead(getStatusCode(err.message), {
-					'Content-Type': 'application/json',
-				});
-				res.end(JSON.stringify({ error: err.message }));
-			});
+		getUserById(req, res, users);			
 	} else if (
 		req.method === 'DELETE' &&
 		req.url?.startsWith(Routes.USER_BY_ID)
 	) {
-		deleteUser(req, res, users).catch(() => {
-			res.writeHead(HttpStatus.NotFound, {
-				'Content-Type': 'application/json',
-			});
-			res.end(JSON.stringify({ error: ErrorMessages.UserNotFound }));
-		});
+		deleteUser(req, res, users);
+	} else if (req.method === 'PUT' && req.url?.startsWith(Routes.USER_BY_ID)) { 
+		updateUserById(req, res, users);
 	} else {
 		res.writeHead(HttpStatus.NotFound, { 'Content-Type': 'application/json' });
-		res.end(JSON.stringify({ error: 'Not Found' }));
+		res.end(JSON.stringify({ error: 'Server Error' }));
 	}
 });
 const PORT = process.env.HOST_PORT || 3000;
