@@ -4,4 +4,5 @@ export enum HttpStatus {
 	Created = 201,
 	OK = 200,
 	NoContent = 204,
+	InternalServerError = 500
 }

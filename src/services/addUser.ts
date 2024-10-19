@@ -1,35 +1,51 @@
-import { IncomingMessage } from 'node:http';
+import { IncomingMessage, ServerResponse } from 'node:http';
 import { v4 as generateID } from 'uuid';
 import { validateUserData } from '../utils/validateUserData';
 import { ErrorMessages } from '../models/ErrorMessages';
+import { HttpStatus } from '../models/HttpStatus';
+import { User } from '../models/User';
 
-export function addUser(req: IncomingMessage): Promise<any> {
-	return new Promise((resolve, reject) => {
-		let body = '';
+export function addUser(req: IncomingMessage, res: ServerResponse, users: User[]): Promise<void> {
+    return new Promise((resolve, _reject) => {
+        let body = '';
 
-		req.on('data', chunk => {
-			body += chunk.toString();
-		});
+        req.on('data', chunk => {
+            body += chunk.toString();
+        });
 
-		req.on('end', () => {
-			const isUserDataValid = validateUserData(body);
+        req.on('end', () => {
+            validateUserData(body)
+                .then(data => {
+                    const newUser: User = {
+                        id: generateID(),
+                        username: data.username,
+                        age: data.age,
+                        hobbies: data.hobbies,
+                    };
+					users.push(newUser);
+					
+                    res.writeHead(HttpStatus.Created, {
+                        'Content-Type': 'application/json',
+                    });
+                    res.end(JSON.stringify(newUser));
 
-			if (isUserDataValid) {
-				const { username, age, hobbies } = JSON.parse(body);
-				const newUser = {
-					id: generateID(),
-					username,
-					age,
-					hobbies: hobbies,
-				};
-				resolve(newUser);
-			} else {
-				reject(new Error(ErrorMessages.InvalidData));
-			}
-		});
+                    resolve();
+                })
+                .catch(error => {
+                   
+                    res.writeHead(HttpStatus.BadRequest, {
+                        'Content-Type': 'application/json',
+                    });
+                    res.end(JSON.stringify({ error: error.message }));
+                });
+        });
 
-		req.on('error', err => {
-			reject(err);
-		});
-	});
+        req.on('error', err => {
+            res.writeHead(HttpStatus.InternalServerError, {
+                'Content-Type': 'application/json',
+            });
+            res.end(JSON.stringify({ error: ErrorMessages.InternalServerError }));
+        });
+    });
 }
+
