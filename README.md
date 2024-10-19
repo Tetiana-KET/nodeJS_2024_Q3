@@ -47,6 +47,6 @@ npm run start:multi
 ## To run the Jest unit tests:
 
 ```
-npm test
+npm run test
 ```
 
