@@ -18,6 +18,7 @@ Additionally, the application incorporates Jest for unit testing, Webpack for bu
     ```
 - Set the port value in the `.env` file.
 - Start the application. There are 2 modes to run the application:
+
     - **Development Mode:** Use `nodemon` for hot-reloading:
     ```
     npm run start:dev
