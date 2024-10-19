@@ -1,37 +1,36 @@
 import { IncomingMessage, ServerResponse } from 'node:http';
 import { User } from '../models/User';
 import { extractUserId } from '../utils/extractUserId';
-import { validate as validateUUID } from 'uuid';
 import { HttpStatus } from '../models/HttpStatus';
 import { ErrorMessages } from '../models/ErrorMessages';
+import { validateUserID } from '../utils/validateUserID';
+import { findUserIndex } from '../utils/findUserIndex';
 
 export function deleteUser(
 	req: IncomingMessage,
 	res: ServerResponse<IncomingMessage>,
 	users: User[]
-): Promise<void> {
-	return new Promise((resolve, reject) => {
-		const userId = extractUserId(req);
-		if (!userId || !validateUUID(userId)) {
-			res.writeHead(HttpStatus.BadRequest, {
+) {
+	const userId = extractUserId(req) || '';
+	validateUserID(userId)
+	.then(() => {
+		const userIndex = findUserIndex(users, userId);
+		if (userIndex !== -1) {
+		users.splice(userIndex, 1);
+			res.writeHead(HttpStatus.NoContent);
+			res.end();
+		} else {
+			res.writeHead(HttpStatus.NotFound, {
 				'Content-Type': 'application/json',
 			});
-			res.end(JSON.stringify({ error: ErrorMessages.InvalidUserId }));
-			return;
+			res.end(JSON.stringify({ error: ErrorMessages.UserNotFound }));
 		}
-
-		if (userId) {
-			const curUserIndex = users.findIndex(user => user.id === userId);
-			if (curUserIndex !== -1) {
-				users.splice(curUserIndex, 1);
-				res.writeHead(HttpStatus.NoContent);
-				res.end();
-				resolve();
-			} else {
-				reject(new Error(ErrorMessages.UserNotFound));
-			}
-		} else {
-			reject(new Error(ErrorMessages.InvalidData));
-		}
+	})
+	.catch((error) => {
+		res.writeHead(HttpStatus.BadRequest, {
+			'Content-Type': 'application/json',
+		});
+		res.end(JSON.stringify({ error: error.message }));
 	});
+
 }
