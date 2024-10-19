@@ -1,0 +1,50 @@
+{
+	"name": "simple_crud_api",
+	"version": "1.0.0",
+	"description": "This repository serves as the solution to the assignment creating simple CRUD API using in-memory database and Node.js core modules. The API is designed to handle basic operations for managing user records.",
+	"main": "dist/bundle.js",
+	"engines": {
+		"node": ">=20.0.0"
+	},
+	"scripts": {
+		"build": "webpack --mode production",
+		"start:dev": "nodemon --exec ts-node src/server",
+		"start:prod": "npm run build && node dist/bundle.js",
+		"lint": "eslint . --report-unused-disable-directives --max-warnings 0",
+		"lint:fix": "eslint src/ --fix",
+		"prettier": "prettier --check --ignore-unknown src/",
+		"prettier:fix": "prettier --write --ignore-unknown src/",
+		"format:all": "npm run lint:fix && npm run prettier:fix"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"devDependencies": {
+		"@eslint/js": "^9.12.0",
+		"@types/dotenv-webpack": "^7.0.7",
+		"@types/eslint-config-prettier": "^6.11.3",
+		"@types/node": "^22.7.6",
+		"@types/uuid": "^10.0.0",
+		"@types/webpack": "^5.28.5",
+		"@typescript-eslint/eslint-plugin": "^8.10.0",
+		"@typescript-eslint/parser": "^8.10.0",
+		"clean-webpack-plugin": "^4.0.0",
+		"dotenv-webpack": "^8.1.0",
+		"eslint": "^9.12.0",
+		"eslint-config-prettier": "^9.1.0",
+		"eslint-plugin-import": "^2.31.0",
+		"eslint-plugin-jsx-a11y": "^6.10.0",
+		"eslint-plugin-prettier": "^5.2.1",
+		"nodemon": "^3.1.7",
+		"prettier": "^3.3.3",
+		"ts-loader": "^9.5.1",
+		"ts-node": "^10.9.2",
+		"typescript": "^5.6.3",
+		"webpack": "^5.95.0",
+		"webpack-cli": "^5.1.4"
+	},
+	"dependencies": {
+		"dotenv": "^16.4.5",
+		"uuid": "^10.0.0"
+	}
+}
