@@ -7,14 +7,25 @@ Additionally, the application incorporates Jest for unit testing, Webpack for bu
 ## Prerequisites
 
 - Node.js v22.9.0 or later
-- Create a `.env` file and set the port value (e.g., `PORT=4000`). See `.env.example`
+- Create a `.env` file and set the port value (e.g., `PORT=3000`). See `.env.example`
 
-## Usage
+## Running the Application
 
 - Clone this repository.
-- Install dependencies `npm install`.
+- Install dependencies 
+    ```
+    npm install
+    ```
 - Set the port value in the `.env` file.
-- Start the application and run tests
+- Start the application. There are 2 modes to run the application:
+    - **Development Mode:** Use `nodemon` for hot-reloading:
+    ```
+    npm run start:dev
+    ```
+    - **Production Mode:** Run the bundled version, use script:
+    ```
+    npm run start:prod
+    ```
 
 ## Endpoints
 
@@ -23,22 +34,6 @@ Additionally, the application incorporates Jest for unit testing, Webpack for bu
 - **Read (One):** `GET /api/users/{userId}`
 - **Update:** `PUT /api/users/{userId}`
 - **Delete:** `DELETE /api/users/{userId}`
-
-## Running the Application
-
-There are 2 modes to run the application:
-
-- **Development Mode:** Use `ts-node-dev` for hot-reloading:
-
-```
-  npm run start:dev
-```
-
-- **Production Mode:** Run the bundled version:
-
-```
-  npm run start:prod
-```
 
 ## Clustering and Load Balancing
 
