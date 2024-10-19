@@ -12,21 +12,24 @@ Additionally, the application incorporates Jest for unit testing, Webpack for bu
 ## Running the Application
 
 - Clone this repository.
-- Install dependencies 
-    ```
-    npm install
-    ```
+- Install dependencies
+  ```
+  npm install
+  ```
 - Set the port value in the `.env` file.
 - Start the application. There are 2 modes to run the application:
 
-    - **Development Mode:** Use `nodemon` for hot-reloading:
-    ```
-    npm run start:dev
-    ```
-    - **Production Mode:** Run the bundled version, use script:
-    ```
-    npm run start:prod
-    ```
+  - **Development Mode:** Use `nodemon` for hot-reloading:
+
+  ```
+  npm run start:dev
+  ```
+
+  - **Production Mode:** Run the bundled version, use script:
+
+  ```
+  npm run start:prod
+  ```
 
 ## Endpoints
 
@@ -47,6 +50,5 @@ npm run start:multi
 ## To run the Jest unit tests:
 
 ```
-npm test
+npm run test
 ```
-

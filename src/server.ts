@@ -8,12 +8,13 @@ import { config } from 'dotenv';
 import { deleteUser } from './services/deleteUser';
 import { updateUserById } from './services/updateUserById';
 import { ErrorMessages } from './models/ErrorMessages';
+import { DEFAULT_PORT } from './consts/detaultPort';
 
 const users: User[] = [];
 
 config();
 
-const server = createServer((req, res) => {
+export const server = createServer((req, res) => {
 	try {
 		if (req.method === 'POST' && req.url === Routes.USERS) {
 			addUser(req, res, users);
@@ -42,7 +43,18 @@ const server = createServer((req, res) => {
 		res.end(JSON.stringify({ error: ErrorMessages.InternalServerError }));
 	}
 });
-const PORT = process.env.HOST_PORT;
-server.listen(PORT, () => {
-	console.log(`Server is running on port ${PORT}`);
-});
+
+export function startServer(port: string, callback: () => void) {
+	server.listen(port, callback);
+}
+
+export function stopServer(callback: () => void) {
+	server.close(callback);
+}
+
+if (require.main === module) {
+	const PORT = process.env.HOST_PORT || DEFAULT_PORT;
+	startServer(PORT, () => {
+		console.log(`Server is running on port ${PORT}`);
+	});
+}
