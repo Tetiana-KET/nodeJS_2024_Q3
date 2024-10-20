@@ -9,13 +9,24 @@ export default [
 	js.configs.recommended,
 	{
 		files: ['**/*.{ts,tsx}'],
-		ignores: ['eslint.config.js', 'webpack.config.ts', 'dist', 'node_modules'],
+		ignores: [
+			'eslint.config.js',
+			'webpack.config.ts',
+			'dist/**',
+			'dist/bundle.js',
+			'node_modules',
+			'global.d.ts',
+			'src/models/***',
+		],
 		languageOptions: {
 			parser: tsEslint,
 			globals: {
 				...globals.browser,
 				...globals.es2020,
 				...globals.node,
+				...globals.jest,
+				node: true,
+				jest: true,
 			},
 			parserOptions: {
 				ecmaVersion: 2022,
@@ -25,10 +36,6 @@ export default [
 		plugins: {
 			'typescript-eslint': tsEslintPlugin,
 			prettier: prettierPlugin,
-		},
-		env: {
-			node: true,
-			jest: true,
 		},
 		rules: {
 			...eslintConfigPrettier.rules,

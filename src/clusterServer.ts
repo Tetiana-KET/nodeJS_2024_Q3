@@ -13,47 +13,47 @@ const WORKERS_NUM = availableParallelism() - 1;
 let requestCount = 0;
 
 if (cluster.isPrimary) {
-	console.log(`Primary ${process.pid} is running on port ${PORT}`);
+  console.log(`Primary ${process.pid} is running on port ${PORT}`);
 
-	for (let i = 0; i < WORKERS_NUM; i++) {
-		cluster.fork();
-	}
+  for (let i = 0; i < WORKERS_NUM; i++) {
+    cluster.fork();
+  }
 
-	const loadBalancer = http.createServer((req, res) => {
-		const workerId = (requestCount % WORKERS_NUM) + 1;
-		requestCount++;
+  const loadBalancer = http.createServer((req, res) => {
+    const workerId = (requestCount % WORKERS_NUM) + 1;
+    requestCount++;
 
-		const options = {
-			hostname: 'localhost',
-			port: +PORT + workerId,
-			path: req.url,
-			method: req.method,
-			headers: req.headers,
-		};
-		const proxy = http.request(options, workerRes => {
-			const statusCode = workerRes.statusCode || HttpStatus.InternalServerError;
-			res.writeHead(statusCode, workerRes.headers);
-			workerRes.pipe(res, { end: true });
-		});
-		req.pipe(proxy, { end: true });
-		proxy.on('error', err => {
-			console.error('Proxy error:', err);
-			res.writeHead(HttpStatus.InternalServerError);
-			res.end(ErrorMessages.InternalServerError);
-		});
-	});
+    const options = {
+      hostname: 'localhost',
+      port: +PORT + workerId,
+      path: req.url,
+      method: req.method,
+      headers: req.headers,
+    };
+    const proxy = http.request(options, (workerRes) => {
+      const statusCode = workerRes.statusCode || HttpStatus.InternalServerError;
+      res.writeHead(statusCode, workerRes.headers);
+      workerRes.pipe(res, { end: true });
+    });
+    req.pipe(proxy, { end: true });
+    proxy.on('error', (err) => {
+      console.error('Proxy error:', err);
+      res.writeHead(HttpStatus.InternalServerError);
+      res.end(ErrorMessages.InternalServerError);
+    });
+  });
 
-	loadBalancer.listen(PORT, () => {
-		console.log(`Load balancer running on http://localhost:${PORT}`);
-	});
+  loadBalancer.listen(PORT, () => {
+    console.log(`Load balancer running on http://localhost:${PORT}`);
+  });
 } else {
-	const workerId = cluster.worker?.id;
-	if (workerId) {
-		const workerPort = (+PORT + workerId).toString();
-		startServer(workerPort, () => {
-			console.log(`Worker ${process.pid} started on port ${workerPort}`);
-		});
-	} else {
-		console.error('Worker ID is undefined');
-	}
+  const workerId = cluster.worker?.id;
+  if (workerId) {
+    const workerPort = (+PORT + workerId).toString();
+    startServer(workerPort, () => {
+      console.log(`Worker ${process.pid} started on port ${workerPort}`);
+    });
+  } else {
+    console.error('Worker ID is undefined');
+  }
 }
