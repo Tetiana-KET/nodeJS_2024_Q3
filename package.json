@@ -10,6 +10,7 @@
 		"build": "webpack --mode production",
 		"start:dev": "nodemon --exec ts-node src/server",
 		"start:prod": "npm run build && node dist/bundle.js",
+		"start:multi": "nodemon --exec ts-node src/clusterServer",
 		"lint": "eslint . --report-unused-disable-directives --max-warnings 0",
 		"lint:fix": "eslint src/ --fix",
 		"prettier": "prettier --check --ignore-unknown src/",

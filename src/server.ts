@@ -9,12 +9,18 @@ import { deleteUser } from './services/deleteUser';
 import { updateUserById } from './services/updateUserById';
 import { ErrorMessages } from './models/ErrorMessages';
 import { DEFAULT_PORT } from './consts/detaultPort';
+import { AddressInfo } from 'node:net';
 
 const users: User[] = [];
 
 config();
 
 export const server = createServer((req, res) => {
+	const address = server.address();
+	const port =
+		typeof address === 'string' ? 'unknown' : (address as AddressInfo).port;
+
+	console.log(`Request handled by worker ${process.pid} on port ${port}`);
 	try {
 		if (req.method === 'POST' && req.url === Routes.USERS) {
 			addUser(req, res, users);
