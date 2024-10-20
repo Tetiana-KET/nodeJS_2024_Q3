@@ -12,6 +12,10 @@ Additionally, the application incorporates Jest for unit testing, Webpack for bu
 ## Running the Application
 
 - Clone this repository.
+- Switch to the `develop` branch
+  ```
+  git switch develop
+  ```
 - Install dependencies 
     ```
     npm install
