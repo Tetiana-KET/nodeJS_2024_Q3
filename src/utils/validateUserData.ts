@@ -1,4 +1,6 @@
+import { CustomError } from '../CustomError/CustomError';
 import { ErrorMessages } from '../models/ErrorMessages';
+import { HttpStatus } from '../models/HttpStatus';
 import { UserWithoutId } from '../models/User';
 
 export function validateUserData(userData: string): Promise<UserWithoutId> {
@@ -6,7 +8,7 @@ export function validateUserData(userData: string): Promise<UserWithoutId> {
     try {
       const { username, age, hobbies, id } = JSON.parse(userData);
       if (id) {
-        reject(new Error(ErrorMessages.ShouldNotContainId));
+        reject(new CustomError(ErrorMessages.ShouldNotContainId, HttpStatus.BadRequest, 'Bad Request'));
       }
       if (
         typeof username === 'string' &&
@@ -16,10 +18,10 @@ export function validateUserData(userData: string): Promise<UserWithoutId> {
       ) {
         resolve({ username, age, hobbies });
       } else {
-        reject(new Error(ErrorMessages.InvalidData));
+        reject(new CustomError(ErrorMessages.InvalidData, HttpStatus.BadRequest, 'Bad Request'));
       }
     } catch {
-      throw new Error(ErrorMessages.InvalidJSON);
+      throw new CustomError(ErrorMessages.InvalidJSON, HttpStatus.BadRequest, 'Bad Request');
     }
   });
 }

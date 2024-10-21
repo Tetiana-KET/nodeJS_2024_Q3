@@ -3,17 +3,21 @@ import http from 'node:http';
 import { availableParallelism } from 'node:os';
 import { startServer } from './server';
 import { config } from 'dotenv';
-import { DEFAULT_BALANCER_PORT } from './consts/detaultPort';
+import { DEFAULT_BALANCER_PORT, DEFAULT_DB_PORT } from './consts/detaultPort';
 import { HttpStatus } from './models/HttpStatus';
 import { ErrorMessages } from './models/ErrorMessages';
+import { startDbService } from './dataBase/dbProcess';
 config();
 
 const PORT = process.env.LOAD_BALANCER_PORT || DEFAULT_BALANCER_PORT;
+const DB_PORT = process.env.DB_PORT || DEFAULT_DB_PORT;
 const WORKERS_NUM = availableParallelism() - 1;
 let requestCount = 0;
 
 if (cluster.isPrimary) {
   console.log(`Primary ${process.pid} is running on port ${PORT}`);
+
+  startDbService(+DB_PORT);
 
   for (let i = 0; i < WORKERS_NUM; i++) {
     cluster.fork();
