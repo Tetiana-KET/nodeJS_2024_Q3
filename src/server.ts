@@ -8,11 +8,11 @@ import { AddressInfo } from 'node:net';
 import { extractUserId } from './utils/extractUserId';
 import { validateUserData } from './utils/validateUserData';
 import { validateUserID } from './utils/validateUserID';
+import { startDbService } from './dataBase/dbProcess';
+config();
 
 const DB_PORT = process.env.DB_PORT || DEFAULT_DB_PORT;
 const dbServiceUrl = `http://localhost:${DB_PORT}/api/users`;
-
-config();
 
 export const server = createServer((req, res) => {
   const address = server.address();
@@ -154,4 +154,5 @@ if (require.main === module) {
   startServer(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
   });
+  startDbService(+DB_PORT);
 }

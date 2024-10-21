@@ -1,7 +1,6 @@
 import { createServer } from 'node:http';
 import { User } from '../models/User';
 import { HttpStatus } from '../models/HttpStatus';
-import { ErrorMessages } from '../models/ErrorMessages';
 import { addUser } from '../services/addUser';
 import { Routes } from '../models/Routes';
 import { getUserById } from '../services/getUserById';
@@ -29,4 +28,15 @@ export const startDbService = (port: number) => {
   dbServer.listen(port, () => {
     console.log(`DB Service is running on port ${port}`);
   });
+};
+
+export const stopDbService = (callback: () => void) => {
+  if (dbServer) {
+    dbServer.close(() => {
+      console.log('DB Service has been stopped.');
+      callback();
+    });
+  } else {
+    callback();
+  }
 };

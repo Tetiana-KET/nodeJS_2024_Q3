@@ -2,6 +2,8 @@ import request from 'supertest';
 import { Routes } from '../models/Routes';
 import { startServer, stopServer } from '../server';
 import { HttpStatus } from '../models/HttpStatus';
+import { startDbService, stopDbService } from '../dataBase/dbProcess';
+import { DEFAULT_DB_PORT } from '../consts/detaultPort';
 
 describe('tests for API', () => {
   let mockServer: ReturnType<typeof request>;
@@ -24,16 +26,23 @@ describe('tests for API', () => {
   const mockInvalidID = '9b538ff3-4f38-46c2-8838-InvalidID';
 
   const TEST_PORT = '3001';
+  const TEST_DB_PORT = process.env.DB_PORT || DEFAULT_DB_PORT;
 
   beforeAll((done) => {
+    startDbService(+TEST_DB_PORT);
     startServer(TEST_PORT, () => {
       mockServer = request('http://localhost:' + TEST_PORT);
+
       done();
     });
   });
 
   afterAll((done) => {
-    stopServer(done);
+    stopServer(() => {
+      stopDbService(() => {
+        done();
+      });
+    });
   });
 
   it('initially should return an empty array when getting all users', async () => {
@@ -71,13 +80,13 @@ describe('tests for API', () => {
   it('should return 404 for the deleted user', async () => {
     const response = await mockServer.get(`${Routes.USERS}/${mockCreatedUserId}`);
     expect(response.status).toBe(HttpStatus.NotFound);
-    expect(response.body.error).toBe('User not found');
+    expect(response.body.error).toBe('User with provided ID not found');
   });
 
   it('should return 404 for non-existent user', async () => {
     const response = await mockServer.get(`${Routes.USERS}/${mockValidID}`);
     expect(response.status).toBe(HttpStatus.NotFound);
-    expect(response.body.error).toBe('User not found');
+    expect(response.body.error).toBe('User with provided ID not found');
   });
 
   it('should return 400 for Invalid user ID', async () => {
